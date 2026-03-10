@@ -1,0 +1,8 @@
+{
+  "display_name": "顶部测试插件",
+  "author": "love",
+  "version": "1.2.0",
+  "loading_order": 10,
+  "js": "index.js",
+  "css": "style.css"
+}

@@ -1,0 +1,259 @@
+<div id="my-topbar-test-panel" class="my-topbar-test-fullscreen-overlay" style="display: none;">
+    <div class="my-topbar-test-container">
+        <!-- 关闭按钮 -->
+        <div id="my-topbar-test-close-btn" class="my-topbar-test-close-btn" title="关闭面板">
+            <i class="fa-solid fa-times"></i>
+        </div>
+
+        <!-- 左侧：功能菜单 -->
+        <div class="my-topbar-test-col-left">
+            <div class="my-topbar-test-section-title">功能菜单</div>
+            
+            <button id="my-topbar-test-range-toggle"
+                    class="menu_button my-topbar-test-menu-btn active"
+                    type="button">
+                <i class="fa-solid fa-code"></i> 设置范围
+            </button>
+
+            <button id="my-topbar-test-template-toggle"
+                    class="menu_button my-topbar-test-menu-btn"
+                    type="button">
+                <i class="fa-solid fa-layer-group"></i> 提示词模板
+            </button>
+
+            <button id="my-topbar-test-capture-send-toggle"
+                    class="menu_button my-topbar-test-menu-btn"
+                    type="button">
+                <i class="fa-solid fa-paper-plane"></i> 截取与发送
+            </button>
+
+            <button id="my-topbar-test-api-toggle"
+                    class="menu_button my-topbar-test-menu-btn"
+                    type="button">
+                <i class="fa-solid fa-link"></i> api链接
+            </button>
+
+        </div>
+
+        <!-- 中间：设置页面 -->
+        <div class="my-topbar-test-col-middle">
+            <div class="my-topbar-test-section-title">设置详情</div>
+
+            <!-- 范围设置 -->
+            <div id="my-topbar-test-range-settings" class="my-topbar-test-settings-section">
+                <label for="my-topbar-test-keep-tags" class="my-topbar-test-keep-tags-row">
+                    <input id="my-topbar-test-keep-tags"
+                           class="my-topbar-test-keep-tags-checkbox"
+                           type="checkbox">
+                    <span class="my-topbar-test-keep-tags-text">保留标签</span>
+                </label>
+
+                <div class="my-topbar-test-range-row">
+                    <label for="my-topbar-test-start-tag" class="my-topbar-test-label">开始标签</label>
+                    <div class="my-topbar-test-tag-input-wrap">
+                        <span class="my-topbar-test-tag-prefix">&lt;</span>
+                        <input id="my-topbar-test-start-tag"
+                               class="my-topbar-test-tag-input"
+                               type="text"
+                               placeholder="例如：text"
+                               spellcheck="false"
+                               autocomplete="off">
+                        <span class="my-topbar-test-tag-suffix">&gt;</span>
+                    </div>
+                </div>
+
+                <div class="my-topbar-test-range-row">
+                    <label for="my-topbar-test-end-tag" class="my-topbar-test-label">结束标签</label>
+                    <div class="my-topbar-test-tag-input-wrap">
+                        <span class="my-topbar-test-tag-prefix">&lt;/</span>
+                        <input id="my-topbar-test-end-tag"
+                               class="my-topbar-test-tag-input"
+                               type="text"
+                               placeholder="例如：text"
+                               spellcheck="false"
+                               autocomplete="off">
+                        <span class="my-topbar-test-tag-suffix">&gt;</span>
+                    </div>
+                </div>
+
+                <div class="my-topbar-test-range-tip">
+                    留空时默认截取整条最后消息。<br>
+                    例如开始标签填 text，结束标签也填 text，就会截取 &lt;text&gt; 和 &lt;/text&gt; 之间的内容。<br>
+                    打开“保留标签”后，输出会连同开始和结束标签一起保留。
+                </div>
+            </div>
+
+        <!-- 模板设置 -->
+        <div id="my-topbar-test-template-settings" class="my-topbar-test-settings-section" style="display: none;">
+            <div id="my-topbar-test-template-browse-view" class="my-topbar-test-template-browse-view">
+                <div class="my-topbar-test-template-tip">
+                    点击模板切换选定状态，点击编辑修改按钮名称和模板内容，上下箭头可调整顺序。
+                </div>
+
+                <div class="my-topbar-test-template-tools">
+                    <button id="my-topbar-test-template-delete-selected"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        删除选定
+                    </button>
+                    <button id="my-topbar-test-template-add"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        添加模板
+                    </button>
+                    <button id="my-topbar-test-template-export"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        导出
+                    </button>
+                    <button id="my-topbar-test-template-import"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        导入
+                    </button>
+                </div>
+
+                <div id="my-topbar-test-template-list" class="my-topbar-test-template-list"></div>
+            </div>
+
+            <div id="my-topbar-test-template-editor-view" class="my-topbar-test-template-editor-view" style="display: none;">
+                <div id="my-topbar-test-template-editor-title" class="my-topbar-test-template-editor-title">编辑模板</div>
+                <label for="my-topbar-test-template-editor-label" class="my-topbar-test-label">按钮名称</label>
+                <input id="my-topbar-test-template-editor-label"
+                       class="text_pole my-topbar-test-template-editor-input"
+                       type="text"
+                       spellcheck="false"
+                       placeholder="请输入按钮名称"
+                       autocomplete="off">
+                <label for="my-topbar-test-template-editor-text" class="my-topbar-test-label">模板内容</label>
+                <textarea id="my-topbar-test-template-editor-text"
+                          class="text_pole my-topbar-test-template-editor-textarea"
+                          spellcheck="false"
+                          placeholder="请输入模板内容"></textarea>
+                <div class="my-topbar-test-template-editor-actions">
+                    <button id="my-topbar-test-template-editor-save"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        保存
+                    </button>
+                    <button id="my-topbar-test-template-editor-exit"
+                            class="menu_button my-topbar-test-template-tool-button"
+                            type="button">
+                        退出
+                    </button>
+                </div>
+            </div>
+
+            <input id="my-topbar-test-template-import-input"
+                   type="file"
+                   accept=".json,application/json"
+                   hidden>
+        </div>
+
+            <div id="my-topbar-test-capture-send-settings" class="my-topbar-test-settings-section" style="display: none;">
+                <div class="my-topbar-test-template-tip">
+                    先手动截取，再把当前截取框中的内容复制发送给 AI。发送完成后会弹出确认框，确认后替换当前聊天窗口最后一条消息。
+                </div>
+
+                <div class="my-topbar-test-capture-send-actions">
+                    <button id="my-topbar-test-manual-trigger"
+                            class="menu_button my-topbar-test-menu-btn my-topbar-test-trigger-btn"
+                            type="button">
+                        <i class="fa-solid fa-bolt"></i> 手动触发
+                    </button>
+                    <button id="my-topbar-test-manual-send"
+                            class="menu_button my-topbar-test-menu-btn my-topbar-test-send-btn"
+                            type="button">
+                        <i class="fa-solid fa-paper-plane"></i> 手动发送
+                    </button>
+                </div>
+            </div>
+
+            <div id="my-topbar-test-api-settings" class="my-topbar-test-settings-section" style="display: none;">
+                <div class="my-topbar-test-api-grid">
+                    <div class="my-topbar-test-api-field">
+                        <label for="my-topbar-test-api-temperature" class="my-topbar-test-label">模型温度</label>
+                        <input id="my-topbar-test-api-temperature" class="text_pole my-topbar-test-api-input" type="number" step="0.1" placeholder="1">
+                    </div>
+
+                    <div class="my-topbar-test-api-field">
+                        <label for="my-topbar-test-api-top-p" class="my-topbar-test-label">Top-P</label>
+                        <input id="my-topbar-test-api-top-p" class="text_pole my-topbar-test-api-input" type="number" step="0.1" placeholder="1">
+                    </div>
+
+                    <div class="my-topbar-test-api-field">
+                        <label for="my-topbar-test-api-top-k" class="my-topbar-test-label">Top-k</label>
+                        <input id="my-topbar-test-api-top-k" class="text_pole my-topbar-test-api-input" type="number" step="1" placeholder="0">
+                    </div>
+
+                    <div class="my-topbar-test-api-field">
+                        <label for="my-topbar-test-api-presence-penalty" class="my-topbar-test-label">存在惩罚</label>
+                        <input id="my-topbar-test-api-presence-penalty" class="text_pole my-topbar-test-api-input" type="number" step="0.1" placeholder="0">
+                    </div>
+
+                    <div class="my-topbar-test-api-field">
+                        <label for="my-topbar-test-api-frequency-penalty" class="my-topbar-test-label">频率惩罚</label>
+                        <input id="my-topbar-test-api-frequency-penalty" class="text_pole my-topbar-test-api-input" type="number" step="0.1" placeholder="0">
+                    </div>
+
+                    <label for="my-topbar-test-api-stream" class="my-topbar-test-keep-tags-row my-topbar-test-api-stream-row">
+                        <input id="my-topbar-test-api-stream" class="my-topbar-test-keep-tags-checkbox" type="checkbox">
+                        <span class="my-topbar-test-keep-tags-text">流式输出</span>
+                    </label>
+                </div>
+
+                <div class="my-topbar-test-api-drawer">
+                    <button id="my-topbar-test-api-source-toggle"
+                            class="menu_button my-topbar-test-api-drawer-toggle"
+                            type="button">
+                        模型来源
+                    </button>
+                    <div id="my-topbar-test-api-source-body" class="my-topbar-test-api-drawer-body" style="display: none;">
+                        <button id="my-topbar-test-api-source-current"
+                                class="menu_button my-topbar-test-api-source-current"
+                                type="button">
+                            与酒馆相同
+                        </button>
+                        <div id="my-topbar-test-api-source-options" class="my-topbar-test-api-source-options" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：输出显示框 -->
+        <div class="my-topbar-test-col-right">
+            <div class="my-topbar-test-section-title">截取内容及输出</div>
+            <label for="my-topbar-test-output" class="my-topbar-test-label" style="margin-bottom: 8px; display: block;">
+                这里会显示当前聊天窗口最底部最后一条消息；如果设置了范围，则只显示标签之间的内容（可编辑）
+            </label>
+
+            <textarea id="my-topbar-test-output"
+                      class="text_pole my-topbar-test-textarea"
+                      placeholder="点击“截取与发送”里的“手动触发”后，这里会自动填入内容。"
+                      spellcheck="false">琳喵喵很高兴为您服务</textarea>
+        </div>
+    </div>
+
+    <div id="my-topbar-test-reply-modal" class="my-topbar-test-reply-modal" style="display: none;">
+        <div class="my-topbar-test-reply-modal-card">
+            <button id="my-topbar-test-reply-modal-close"
+                    class="menu_button my-topbar-test-reply-modal-close"
+                    type="button"
+                    aria-label="关闭回复确认框">
+                ×
+            </button>
+            <div class="my-topbar-test-reply-modal-title">AI 回复确认</div>
+            <textarea id="my-topbar-test-reply-modal-text"
+                      class="text_pole my-topbar-test-reply-modal-textarea"
+                      spellcheck="false"
+                      placeholder="这里会显示 AI 的完整回复，可编辑后再确认替换。"></textarea>
+            <div class="my-topbar-test-reply-modal-actions">
+                <button id="my-topbar-test-reply-modal-confirm"
+                        class="menu_button my-topbar-test-template-tool-button"
+                        type="button">
+                    确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

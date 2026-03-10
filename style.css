@@ -1,0 +1,503 @@
+#my-topbar-test-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+    user-select: none;
+    color: var(--SmartThemeBodyColor, #ffffff);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.28);
+}
+
+#my-topbar-test-button:hover {
+    opacity: 0.85;
+}
+
+.my-topbar-test-button-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1em;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    color: inherit;
+}
+
+/* 全屏遮罩层 */
+.my-topbar-test-fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999; /* 确保层级足够高，不被酒馆其他面板挡住 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+/* 主容器：三栏布局 */
+.my-topbar-test-container {
+    position: relative;
+    display: flex;
+    width: 90vw;
+    height: 85vh;
+    max-width: 1400px;
+    background: var(--SmartThemeBlurTintColor, rgba(30, 30, 30, 0.96));
+    color: var(--SmartThemeBodyColor, #ffffff);
+    border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+/* 关闭按钮 */
+.my-topbar-test-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.my-topbar-test-close-btn:hover {
+    opacity: 1;
+    color: #ff5c5c;
+}
+
+/* 栏目标题 */
+.my-topbar-test-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+/* 左侧：菜单栏 (固定宽度) */
+.my-topbar-test-col-left {
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+}
+
+.my-topbar-test-menu-btn {
+    width: 100%;
+    margin: 0 0 10px 0;
+    padding: 12px 15px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.my-topbar-test-menu-btn.active {
+    background: var(--SmartThemeQuoteColor, rgba(255, 255, 255, 0.2));
+    box-shadow: inset 4px 0 0 var(--SmartThemeBodyColor, #fff);
+}
+
+.my-topbar-test-trigger-btn {
+    background: rgba(46, 204, 113, 0.2);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    text-align: center;
+    justify-content: center;
+}
+.my-topbar-test-trigger-btn:hover {
+    background: rgba(46, 204, 113, 0.4);
+}
+
+.my-topbar-test-send-btn {
+    background: rgba(52, 152, 219, 0.18);
+    border: 1px solid rgba(52, 152, 219, 0.35);
+    text-align: center;
+    justify-content: center;
+}
+
+.my-topbar-test-send-btn:hover {
+    background: rgba(52, 152, 219, 0.32);
+}
+
+/* 中间：设置面板 (弹性宽度) */
+.my-topbar-test-col-middle {
+    flex: 1 1 0;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.my-topbar-test-settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 右侧：输出显示框 (弹性宽度) */
+.my-topbar-test-col-right {
+    flex: 1 1 0;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.1);
+    border-left: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+}
+
+.my-topbar-test-textarea {
+    flex: 1;
+    width: 100%;
+    resize: none;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.6;
+    font-family: inherit;
+    padding: 15px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* 原有组件样式适配 */
+.my-topbar-test-label {
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: 0.95;
+    color: var(--SmartThemeBodyColor, #ffffff);
+}
+
+.my-topbar-test-keep-tags-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    user-select: none;
+    width: fit-content;
+}
+
+.my-topbar-test-keep-tags-checkbox { margin: 0; cursor: pointer; }
+.my-topbar-test-keep-tags-text { font-size: 13px; line-height: 1; opacity: 0.95; }
+
+.my-topbar-test-range-row { display: flex; flex-direction: column; gap: 8px; }
+
+.my-topbar-test-tag-input-wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 42px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    box-sizing: border-box;
+}
+
+.my-topbar-test-tag-input-wrap:focus-within { border-color: rgba(255, 255, 255, 0.28); }
+
+.my-topbar-test-tag-prefix,
+.my-topbar-test-tag-suffix {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    opacity: 0.9;
+    user-select: none;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+}
+
+.my-topbar-test-tag-input {
+    flex: 1 1 auto;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+.my-topbar-test-range-tip,
+.my-topbar-test-template-tip {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.my-topbar-test-template-tools {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.my-topbar-test-template-browse-view,
+.my-topbar-test-template-editor-view {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.my-topbar-test-capture-send-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.my-topbar-test-template-tool-button {
+    width: auto;
+    padding: 8px 15px;
+    font-size: 12px;
+}
+
+.my-topbar-test-template-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.my-topbar-test-template-item {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.my-topbar-test-template-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
+}
+
+.my-topbar-test-template-combo {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.my-topbar-test-template-move {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 0 0 40px;
+}
+
+.my-topbar-test-template-move-button {
+    min-height: 30px;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+.my-topbar-test-template-edit-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+    width: auto;
+    min-width: 56px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 12px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.my-topbar-test-template-move-button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.my-topbar-test-template-apply {
+    flex: 1 1 auto;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    padding: 0 82px 0 15px;
+    min-height: 64px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+.my-topbar-test-template-apply.is-selected {
+    border-color: var(--SmartThemeBorderColor, rgba(115, 230, 182, 0.75));
+    background: rgba(115, 230, 182, 0.16);
+}
+
+.my-topbar-test-template-editor-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.my-topbar-test-template-editor-input {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 0 12px;
+}
+
+.my-topbar-test-template-editor-textarea {
+    width: 100%;
+    min-height: 260px;
+    resize: vertical;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.my-topbar-test-template-editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.my-topbar-test-template-empty {
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.my-topbar-test-api-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.my-topbar-test-api-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.my-topbar-test-api-input {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    font-size: 14px;
+}
+
+.my-topbar-test-api-stream-row {
+    min-height: 42px;
+}
+
+.my-topbar-test-api-drawer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.my-topbar-test-api-drawer-toggle,
+.my-topbar-test-api-source-current,
+.my-topbar-test-api-source-option {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.my-topbar-test-api-drawer-body,
+.my-topbar-test-api-source-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.my-topbar-test-reply-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(4px);
+}
+
+.my-topbar-test-reply-modal-card {
+    position: relative;
+    width: min(720px, calc(100% - 40px));
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--SmartThemeBlurTintColor, rgba(30, 30, 30, 0.98));
+    border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.my-topbar-test-reply-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+}
+
+.my-topbar-test-reply-modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    padding-right: 36px;
+}
+
+.my-topbar-test-reply-modal-textarea {
+    width: 100%;
+    min-height: 260px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 15px;
+}
+
+.my-topbar-test-reply-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
