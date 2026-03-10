@@ -1,2 +1,3 @@
 # sillytavern-Hou-chuli
-喵喵喵?
+一个用于 SillyTavern 的插件。
+喵喵喵!
