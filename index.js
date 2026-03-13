@@ -9,6 +9,8 @@
     const RANGE_NOT_FOUND_TEXT = '标签内没有找到内容,无法截取';
     const RANGE_INCOMPLETE_TEXT = '请同时填写开始标签和结束标签，或者两个都留空。';
     const DEFAULT_PRESET_NAME = '默认预设';
+    const TEMPLATE_EDITOR_MODE_EDIT = 'edit';
+    const TEMPLATE_EDITOR_MODE_DELETE = 'delete';
     const DEFAULT_TEMPLATE_BLUEPRINTS = Object.freeze([
         Object.freeze({
             label: '润色',
@@ -104,6 +106,8 @@
         templateEditorTitle: '#my-topbar-test-template-editor-title',
         templateEditorLabelInput: '#my-topbar-test-template-editor-label',
         templateEditorTextarea: '#my-topbar-test-template-editor-text',
+        templateEditorDeletePanel: '#my-topbar-test-template-editor-delete-panel',
+        templateEditorDeleteSkipCheckbox: '#my-topbar-test-template-editor-delete-skip',
         templateEditorSaveButton: '#my-topbar-test-template-editor-save',
         templateEditorExitButton: '#my-topbar-test-template-editor-exit',
 
@@ -2053,10 +2057,24 @@
         return String($input.val() ?? '');
     }
 
+    function isTemplateDeleteMode() {
+        return Boolean(templateEditorState) && templateEditorState.mode === TEMPLATE_EDITOR_MODE_DELETE;
+    }
+
     function resetTemplateEditorUi() {
         $(SELECTORS.templateEditorTitle).text('编辑模板');
-        $(SELECTORS.templateEditorLabelInput).val('');
-        $(SELECTORS.templateEditorTextarea).val('');
+        $(SELECTORS.templateEditorLabelInput)
+            .val('')
+            .prop('readonly', false)
+            .attr('placeholder', '请输入模板名称');
+        $(SELECTORS.templateEditorTextarea)
+            .val('')
+            .prop('readonly', false)
+            .attr('placeholder', '请输入模板内容');
+        $(SELECTORS.templateEditorDeletePanel).hide();
+        $(SELECTORS.templateEditorDeleteSkipCheckbox).prop('checked', false);
+        $(SELECTORS.templateEditorSaveButton).text('保存');
+        $(SELECTORS.templateEditorExitButton).text('退出');
     }
 
     function showTemplateBrowseView() {
@@ -2076,6 +2094,10 @@
     }
 
     function isTemplateEditorDirty() {
+        if (!templateEditorState || isTemplateDeleteMode()) {
+            return false;
+        }
+
         return Boolean(templateEditorState) && (
             getTemplateEditorDraftContent() !== templateEditorState.originalContent
             || getTemplateEditorDraftLabel() !== templateEditorState.originalLabel
@@ -2103,7 +2125,20 @@
             return;
         }
 
-        $(SELECTORS.templateEditorTitle).text(`编辑模板：${template.label}`);
+        const isDeleteMode = isTemplateDeleteMode();
+        $(SELECTORS.templateEditorTitle).text(`${isDeleteMode ? '删除模板' : '编辑模板'}：${template.label}`);
+        $(SELECTORS.templateEditorLabelInput)
+            .val(template.label)
+            .prop('readonly', isDeleteMode)
+            .attr('placeholder', isDeleteMode ? '' : '请输入模板名称');
+        $(SELECTORS.templateEditorTextarea)
+            .val(template.content)
+            .prop('readonly', isDeleteMode)
+            .attr('placeholder', isDeleteMode ? '' : '请输入模板内容');
+        $(SELECTORS.templateEditorDeletePanel).toggle(isDeleteMode);
+        $(SELECTORS.templateEditorDeleteSkipCheckbox).prop('checked', isDeleteMode && Boolean(templateEditorState.skipFutureDeleteConfirm));
+        $(SELECTORS.templateEditorSaveButton).text(isDeleteMode ? '删除' : '保存');
+        $(SELECTORS.templateEditorExitButton).text(isDeleteMode ? '取消' : '退出');
         showTemplateEditorView();
     }
 
@@ -2408,7 +2443,13 @@
             return;
         }
 
-        if (templateEditorState && templateEditorState.templateId !== templateId) {
+        if (
+            templateEditorState
+            && (
+                templateEditorState.templateId !== templateId
+                || templateEditorState.mode !== TEMPLATE_EDITOR_MODE_EDIT
+            )
+        ) {
             const confirmed = await confirmExitTemplateEditorIfDirty();
             if (!confirmed) {
                 return;
@@ -2417,18 +2458,20 @@
 
         closeTemplatePresetDrawer();
 
-        if (!templateEditorState || templateEditorState.templateId !== templateId) {
+        if (
+            !templateEditorState
+            || templateEditorState.templateId !== templateId
+            || templateEditorState.mode !== TEMPLATE_EDITOR_MODE_EDIT
+        ) {
             templateEditorState = {
                 templateId: template.id,
                 originalLabel: template.label,
                 originalContent: template.content,
+                mode: TEMPLATE_EDITOR_MODE_EDIT,
             };
-            $(SELECTORS.templateEditorLabelInput).val(template.label);
-            $(SELECTORS.templateEditorTextarea).val(template.content);
         }
 
-        $(SELECTORS.templateEditorTitle).text(`编辑模板：${template.label}`);
-        showTemplateEditorView();
+        syncTemplateEditorState();
 
         const $textarea = $(SELECTORS.templateEditorTextarea);
         if ($textarea.length) {
@@ -2451,8 +2494,14 @@
         leaveTemplateEditor();
     }
 
-    function handleTemplateEditorSave() {
+    async function handleTemplateEditorSave() {
         if (!templateEditorState) {
+            return;
+        }
+
+        if (isTemplateDeleteMode()) {
+            templateDeleteConfirmState.skipForSession = $(SELECTORS.templateEditorDeleteSkipCheckbox).is(':checked');
+            await deleteTemplateById(templateEditorState.templateId);
             return;
         }
 
@@ -2825,32 +2874,6 @@
         syncOutputFromSelectedTemplates();
     }
 
-    async function confirmDeleteTemplate(template) {
-        if (templateDeleteConfirmState.skipForSession) {
-            return true;
-        }
-
-        const result = await showTemplateActionDialog({
-            title: '删除模板',
-            message: `确定删除模板“${template.label}”吗？`,
-            checkboxLabel: '本次使用不再提示',
-            buttons: [
-                { value: 'cancel', label: '取消' },
-                { value: 'confirm', label: '删除', primary: true },
-            ],
-        });
-
-        if (result.action !== 'confirm') {
-            return false;
-        }
-
-        if (result.checked) {
-            templateDeleteConfirmState.skipForSession = true;
-        }
-
-        return true;
-    }
-
     async function deleteTemplateById(templateId) {
         const settings = loadSettings();
         const currentPreset = getCurrentTemplatePreset(settings);
@@ -2864,11 +2887,6 @@
             return;
         }
 
-        const confirmed = await confirmDeleteTemplate(template);
-        if (!confirmed) {
-            return;
-        }
-
         currentPreset.templates = currentPreset.templates.filter(item => item.id !== templateId);
         currentPreset.selectedTemplateIds = currentPreset.selectedTemplateIds.filter(id => id !== templateId);
         if (templateEditorState && templateEditorState.templateId === templateId) {
@@ -2879,6 +2897,51 @@
         renderTemplateList();
         syncOutputFromSelectedTemplates();
         showMessage('success', '模板已删除。');
+    }
+
+    async function openTemplateDeleteView(templateId) {
+        const template = findTemplateById(templateId);
+        if (!template) {
+            showMessage('warning', '没有找到要删除的模板。');
+            return;
+        }
+
+        if (templateDeleteConfirmState.skipForSession) {
+            await deleteTemplateById(templateId);
+            return;
+        }
+
+        if (
+            templateEditorState
+            && (
+                templateEditorState.templateId !== templateId
+                || templateEditorState.mode !== TEMPLATE_EDITOR_MODE_EDIT
+            )
+        ) {
+            const confirmed = await confirmExitTemplateEditorIfDirty();
+            if (!confirmed) {
+                return;
+            }
+        }
+
+        closeTemplatePresetDrawer();
+
+        if (
+            !templateEditorState
+            || templateEditorState.templateId !== templateId
+            || templateEditorState.mode !== TEMPLATE_EDITOR_MODE_DELETE
+        ) {
+            templateEditorState = {
+                templateId: template.id,
+                originalLabel: template.label,
+                originalContent: template.content,
+                mode: TEMPLATE_EDITOR_MODE_DELETE,
+                skipFutureDeleteConfirm: false,
+            };
+        }
+
+        syncTemplateEditorState();
+        $(SELECTORS.templateEditorDeleteSkipCheckbox).trigger('focus');
     }
 
     function getTemplateItemElement(templateId) {
@@ -3331,6 +3394,17 @@
                                           class="text_pole my-topbar-test-template-editor-textarea"
                                           spellcheck="false"
                                           placeholder="请输入模板内容"></textarea>
+                                <div id="my-topbar-test-template-editor-delete-panel" class="my-topbar-test-template-editor-delete-panel" style="display: none;">
+                                    <div class="my-topbar-test-template-tip">
+                                        确认删除后，此模板会从当前预设中移除。
+                                    </div>
+                                    <label for="my-topbar-test-template-editor-delete-skip" class="my-topbar-test-keep-tags-row">
+                                        <input id="my-topbar-test-template-editor-delete-skip"
+                                               class="my-topbar-test-keep-tags-checkbox"
+                                               type="checkbox">
+                                        <span class="my-topbar-test-keep-tags-text">本次使用不再提示</span>
+                                    </label>
+                                </div>
                                 <div class="my-topbar-test-template-editor-actions">
                                     <button id="my-topbar-test-template-editor-save"
                                             class="menu_button my-topbar-test-template-tool-button"
@@ -3942,15 +4016,25 @@
                 e.stopPropagation();
 
                 const templateId = String($(this).attr('data-template-id') ?? '');
-                await deleteTemplateById(templateId);
+                await openTemplateDeleteView(templateId);
+            });
+
+        $(document)
+            .off('change.myTopbarTestTemplateDeleteSkip', SELECTORS.templateEditorDeleteSkipCheckbox)
+            .on('change.myTopbarTestTemplateDeleteSkip', SELECTORS.templateEditorDeleteSkipCheckbox, function () {
+                if (!isTemplateDeleteMode()) {
+                    return;
+                }
+
+                templateEditorState.skipFutureDeleteConfirm = $(this).is(':checked');
             });
 
         $(document)
             .off('click.myTopbarTestTemplateEditorSave', SELECTORS.templateEditorSaveButton)
-            .on('click.myTopbarTestTemplateEditorSave', SELECTORS.templateEditorSaveButton, function (e) {
+            .on('click.myTopbarTestTemplateEditorSave', SELECTORS.templateEditorSaveButton, async function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                handleTemplateEditorSave();
+                await handleTemplateEditorSave();
             });
 
         $(document)

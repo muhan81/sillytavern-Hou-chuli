@@ -471,6 +471,12 @@ body.my-topbar-test-template-dragging .my-topbar-test-template-apply {
     border-radius: 8px;
 }
 
+.my-topbar-test-template-editor-delete-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .my-topbar-test-template-editor-actions {
     display: flex;
     justify-content: flex-end;
