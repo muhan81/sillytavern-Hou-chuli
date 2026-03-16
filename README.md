@@ -49,19 +49,6 @@
    - 支持拖拽位置
    - 支持自定义宽高
 
-## 安装方式
-
-把本插件文件夹整体放到 SillyTavern 的第三方扩展目录中。
-
-常见做法是把整个目录复制到 SillyTavern 的 `public/scripts/extensions/third-party/` 下，然后刷新页面或重载扩展。
-
-建议完整保留下面这些文件：
-
-- `manifest.json`
-- `index.js`
-- `style.css`
-- `settings.html`
-- `zhaopan/linmm.webp`
 
 说明：
 
