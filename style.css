@@ -678,7 +678,10 @@ body.my-topbar-test-template-dragging .my-topbar-test-template-apply {
 
 .my-topbar-test-reply-modal {
     position: fixed;
-    inset: 0;
+    top: var(--my-topbar-test-reply-modal-offset-top, 0px);
+    left: var(--my-topbar-test-reply-modal-offset-left, 0px);
+    width: var(--my-topbar-test-reply-modal-width, 100vw);
+    height: var(--my-topbar-test-reply-modal-height, 100dvh);
     z-index: 10000;
     display: flex;
     align-items: center;
@@ -690,7 +693,9 @@ body.my-topbar-test-template-dragging .my-topbar-test-template-apply {
 .my-topbar-test-reply-modal-card {
     position: relative;
     width: min(720px, calc(100% - 40px));
+    max-width: 720px;
     padding: 20px;
+    box-sizing: border-box;
     border-radius: 12px;
     background: var(--SmartThemeBlurTintColor, rgba(30, 30, 30, 0.98));
     border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
@@ -719,8 +724,10 @@ body.my-topbar-test-template-dragging .my-topbar-test-template-apply {
 
 .my-topbar-test-reply-modal-view {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
     gap: 16px;
+    min-height: 0;
 }
 
 .my-topbar-test-reply-modal-tip {
@@ -909,15 +916,32 @@ body.my-topbar-test-template-dragging .my-topbar-test-template-apply {
         align-items: center;
         justify-content: center;
         overflow-y: auto;
-        padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(12px + env(safe-area-inset-bottom, 0px));
         box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
     }
 
     .my-topbar-test-reply-modal-card {
         width: min(100%, 720px);
-        margin: 0;
-        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px);
-        overflow-y: auto;
+        margin: auto;
+        max-height: calc(var(--my-topbar-test-reply-modal-height, 100dvh) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
+        overflow: hidden;
+    }
+
+    .my-topbar-test-reply-modal-textarea {
+        flex: 1 1 auto;
+        min-height: clamp(160px, 34dvh, 260px);
+        height: clamp(160px, 34dvh, 260px);
+        max-height: none;
+        resize: none;
+    }
+
+    .my-topbar-test-reply-modal-feedback-textarea {
+        flex: 1 1 auto;
+        min-height: clamp(120px, 24dvh, 180px);
+        height: clamp(120px, 24dvh, 180px);
+        max-height: none;
+        resize: none;
     }
 
     .my-topbar-test-reply-modal-actions {

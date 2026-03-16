@@ -1637,6 +1637,42 @@
         }
     }
 
+    function syncReplyModalViewportMetrics() {
+        const $modal = $(SELECTORS.replyModal);
+        if (!$modal.length) {
+            return;
+        }
+
+        const visualViewport = window.visualViewport;
+        const fallbackWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+        const fallbackHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        const width = Math.max(0, Math.round(visualViewport?.width || fallbackWidth));
+        const height = Math.max(0, Math.round(visualViewport?.height || fallbackHeight));
+        const offsetTop = Math.max(0, Math.round(visualViewport?.offsetTop || 0));
+        const offsetLeft = Math.max(0, Math.round(visualViewport?.offsetLeft || 0));
+
+        $modal.css({
+            '--my-topbar-test-reply-modal-width': width ? `${width}px` : '100vw',
+            '--my-topbar-test-reply-modal-height': height ? `${height}px` : '100dvh',
+            '--my-topbar-test-reply-modal-offset-top': `${offsetTop}px`,
+            '--my-topbar-test-reply-modal-offset-left': `${offsetLeft}px`,
+        });
+    }
+
+    function scheduleReplyModalViewportSync() {
+        syncReplyModalViewportMetrics();
+
+        if (!isMobileLayout()) {
+            return;
+        }
+
+        window.requestAnimationFrame(() => {
+            syncReplyModalViewportMetrics();
+            window.setTimeout(syncReplyModalViewportMetrics, 80);
+            window.setTimeout(syncReplyModalViewportMetrics, 220);
+        });
+    }
+
     function setReplyModalMode(mode) {
         replyModalState.mode = mode === 'feedback' ? 'feedback' : 'confirm';
         syncReplyModalView();
@@ -1679,9 +1715,11 @@
         $(SELECTORS.replyModalTextarea).val(String(text ?? ''));
         $(SELECTORS.replyModalFeedbackInput).val('');
         ensureReplyModalMounted();
+        scheduleReplyModalViewportSync();
         syncReplyModalView();
         blurActiveElement();
         fadeInReplyModal();
+        scheduleReplyModalViewportSync();
         focusReplyModalTextarea();
     }
 
@@ -1723,6 +1761,7 @@
     function ensureReplyModalMountedAtInit() {
         // Ensure modal is globally visible even when panel is hidden.
         ensureReplyModalMounted();
+        syncReplyModalViewportMetrics();
         syncReplyModalView();
     }
 
@@ -5343,6 +5382,7 @@
             .off('resize.myTopbarTestLayout')
             .on('resize.myTopbarTestLayout', function () {
                 syncMobileTabsUi();
+                syncReplyModalViewportMetrics();
                 syncFloatingWindowSettingsUi();
                 syncFloatingWindowUi();
             });
