@@ -1590,6 +1590,10 @@
     }
 
     function focusReplyModalTextarea() {
+        if (isMobileLayout()) {
+            return;
+        }
+
         const $textarea = $(SELECTORS.replyModalTextarea);
         if ($textarea.length) {
             $textarea.trigger('focus');
@@ -1597,9 +1601,39 @@
     }
 
     function focusReplyModalFeedbackInput() {
+        if (isMobileLayout()) {
+            return;
+        }
+
         const $textarea = $(SELECTORS.replyModalFeedbackInput);
         if ($textarea.length) {
             $textarea.trigger('focus');
+        }
+    }
+
+    function blurActiveElement() {
+        const activeElement = document.activeElement;
+        if (!activeElement || activeElement === document.body || activeElement === document.documentElement) {
+            return;
+        }
+
+        if (typeof activeElement.blur === 'function') {
+            activeElement.blur();
+        }
+    }
+
+    function blurReplyModalActiveElement() {
+        const activeElement = document.activeElement;
+        if (!activeElement || activeElement === document.body || activeElement === document.documentElement) {
+            return;
+        }
+
+        if (!$(activeElement).closest(SELECTORS.replyModal).length) {
+            return;
+        }
+
+        if (typeof activeElement.blur === 'function') {
+            activeElement.blur();
         }
     }
 
@@ -1646,6 +1680,7 @@
         $(SELECTORS.replyModalFeedbackInput).val('');
         ensureReplyModalMounted();
         syncReplyModalView();
+        blurActiveElement();
         fadeInReplyModal();
         focusReplyModalTextarea();
     }
@@ -1660,6 +1695,7 @@
         replyModalState.feedbackText = '';
         syncReplyModalView();
         $(SELECTORS.replyModalFeedbackInput).val('');
+        blurReplyModalActiveElement();
         fadeOutReplyModal();
 
         if (source === 'auto' && !shouldKeepAutoBusy) {
@@ -1692,6 +1728,7 @@
 
     function openReplyModalFeedbackView() {
         replyModalState.feedbackText = String($(SELECTORS.replyModalFeedbackInput).val() ?? replyModalState.feedbackText ?? '');
+        blurReplyModalActiveElement();
         setReplyModalMode('feedback');
         $(SELECTORS.replyModalFeedbackInput).val(replyModalState.feedbackText);
         focusReplyModalFeedbackInput();
@@ -1699,6 +1736,7 @@
 
     function openReplyModalConfirmView() {
         replyModalState.feedbackText = String($(SELECTORS.replyModalFeedbackInput).val() ?? '');
+        blurReplyModalActiveElement();
         setReplyModalMode('confirm');
         focusReplyModalTextarea();
     }
